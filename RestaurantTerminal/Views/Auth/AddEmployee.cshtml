@@ -1,0 +1,81 @@
+﻿@model AddEmployeeModel
+
+<div class="container">
+    <form asp-controller="Auth" asp-action="AddEmployee" class="m-auto" method="post" asp-antiforgery="true">
+        <div class="modal fade show d-block" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Добавление сотрудника</h1>
+                        <a href="/Home/Index" class="text-decoration-none">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </a>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-floating my-1">
+                            <input type="text" class="form-control" asp-for="Login" id="floatingInput" placeholder="Логин">
+                            <label for="floatingInput">Логин</label>
+                            <span asp-validation-for="Login" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="form-floating my-1">
+                            <input type="password" class="form-control" asp-for="Password" id="floatingInput" placeholder="Логин">
+                            <label for="floatingInput">Пароль</label>
+                            <span asp-validation-for="Password" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="form-floating my-1">
+                            <input type="text" class="form-control" asp-for="FirstName" id="floatingInput" placeholder="Имя">
+                            <label for="floatingInput">Имя</label>
+                            <span asp-validation-for="FirstName" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="form-floating my-1">
+                            <input type="text" class="form-control" asp-for="LastName" id="floatingInput" placeholder="Фамилия">
+                            <label for="floatingInput">Фамилия</label>
+                            <span asp-validation-for="LastName" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="form-floating my-1">
+                            <input type="text" class="form-control" asp-for="Patronymic" id="floatingInput" placeholder="Отчество">
+                            <label for="floatingInput">Отчество</label>
+                            <span asp-validation-for="Patronymic" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="form-floating my-1">
+                            <input type="text" class="form-control" asp-for="PhoneNumber" id="floatingInput" placeholder="Номер телефона">
+                            <label for="floatingInput">Номер телефона</label>
+                            <span asp-validation-for="PhoneNumber" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="form-floating my-1">
+                            <input class="form-control" asp-for="DateOfBirth" id="floatingInput" placeholder="Дата рождения" min="1920-01-01" max="2007-12-31" value="2004-01-01">
+                            <label for="floatingInput">Дата рождения</label>
+                            <span asp-validation-for="DateOfBirth" class="text-danger p-1"></span>
+                        </div>
+
+
+                        <div>
+                            <select class="form-select py-3" asp-for="Role">
+                                <option value="" selected>Выберете Должность</option>
+                                <option value="ADMIN">Администратор</option>
+                                <option value="MANAGER">Менеджер</option>
+                                <option value="CASHIER">Кассир</option>
+                                <option value="COOK">Повар</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger p-1"></span>
+                            <span class="text-danger p-1">@Model?.Error</span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/Home/Index" class="text-decoration-none">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                        </a>
+                        <button type="submit" class="btn btn-danger">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

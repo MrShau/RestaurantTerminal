@@ -1,0 +1,177 @@
+﻿@using System.Security.Claims;
+@model EmployeesModel
+@await Html.PartialAsync("Header")
+
+<div class="container overflow-x-auto">
+    <div class="my-5 text-center">
+        <h3>Список сотрудников</h3>
+    </div>
+
+    <table class="table table-striped table-bordered border-dark mb-5">
+        <thead>
+            <tr>
+                <th scope="auto">Id</th>
+                <th scope="auto">Логин Работника</th>
+                <th scope="auto">Пароль Работника</th>
+                <th scope="auto">Имя Работника</th>
+                <th scope="auto">Фамилия Работника</th>
+                <th scope="auto">Отчество Работника</th>
+                <th scope="auto">Должность Работника</th>
+                <th scope="auto"></th>
+                @{
+                    if (User.IsInRole("ADMIN"))
+                    {
+                        <th scope="auto"></th>
+                        <th scope="auto"></th>
+                    }
+                }
+                
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    foreach (var item in Model.Employees)
+                    {
+                        <form asp-controller="Auth" asp-action="EditEmployee" asp-antiforgery="true">
+                        <tr>
+                            <th>
+                            @item.Id
+                            <input hidden asp-for="@Model.Id" value="@item.Id"/>
+                            </th>
+                            <td>
+                                    @{
+                                        if (User.IsInRole("ADMIN"))
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.Login" value="@item.Login" id="floatingInput" placeholder="Логин">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.Login" value="@item.Login" id="floatingInput" placeholder="Логин" readonly>
+                                        }
+                                    }
+                            </td>
+                            <td>
+                                    @{
+                                        if (User.IsInRole("ADMIN"))
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.Password" value="@item.Password" id="floatingInput" placeholder="Логин">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.Password" value="@item.Password" id="floatingInput" placeholder="Логин" readonly>
+                                        }
+                                    }
+                            </td>
+                            <td>
+                                    @{
+                                        if (User.IsInRole("ADMIN"))
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.FirstName" value="@item.Person.FirstName" id="floatingInput" placeholder="Логин">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.FirstName" value="@item.Person.FirstName" id="floatingInput" placeholder="Логин" readonly>
+                                        }
+                                    }
+                            </td>
+                            <td>
+                                    @{
+                                        if (User.IsInRole("ADMIN"))
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.LastName" value="@item.Person.LastName" id="floatingInput" placeholder="Логин">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.LastName" value="@item.Person.LastName" id="floatingInput" placeholder="Логин" readonly>
+                                        }
+                                    }
+                            </td>
+                            <td>
+                                    @{
+                                        if (User.IsInRole("ADMIN"))
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.Patronymic" value="@item.Person.Patronymic" id="floatingInput" placeholder="Логин">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" asp-for="@Model.Patronymic" value="@item.Person.Patronymic" id="floatingInput" placeholder="Логин" readonly>
+                                        }
+                                    }
+                            </td>
+                            <td>
+                                    @{
+                                        Model.Role = item.Role.Name;
+                                    }
+                                    @{
+                                        if (User.IsInRole("ADMIN"))
+                                        {
+                                        <select class="form-select" asp-for="@Model.Role">
+                                            <option value="ADMIN">Администратор</option>
+                                            <option value="MANAGER">Менеджер</option>
+                                            <option value="CASHIER">Кассир</option>
+                                            <option value="COOK">Повар</option>
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                        <select class="form-select" asp-for="@Model.Role" disabled>
+                                            <option value="ADMIN">Администратор</option>
+                                            <option value="MANAGER">Менеджер</option>
+                                            <option value="CASHIER">Кассир</option>
+                                            <option value="COOK">Повар</option>
+                                        </select>
+                                        }
+                                    }
+                                
+                            </td>
+                                @{
+                                    if (User.IsInRole("ADMIN"))
+                                    {
+                                        <td><button type="submit" class="btn btn-danger">Подтвердить изменения</button></td>
+                                    }
+                                }
+                            <td><a href="/ActivityStatistics/?employee_id=@item.Id" class="btn btn-outline-danger">История активности</a></td>
+                            
+                                    @{
+                                        if (item.Id != int.Parse(User.FindFirst(ClaimTypes.Sid).Value) && User.IsInRole("ADMIN"))
+                                        {
+                                            <td>
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteEmployee_@item.Id">
+                                            Удалить
+                                        </button>
+
+                                        <div class="modal fade" id="modalDeleteEmployee_@item.Id" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Удаления работника</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Вы уверены что хотите удалить работника @item.Person.FirstName @item.Person.LastName ?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                                                        <form asp-action="DeleteEmployee" asp-controller="Auth" method="post">
+                                                            <input type="number" name="employee_id" value="@item.Id" hidden />
+                                                            <button type="submit" class="btn btn-danger">Удалить</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </td>
+                                        }
+                                    }
+
+                        </tr>
+                        </form>
+                    }
+                }
+            }
+        </tbody>
+
+    </table>
+</div>

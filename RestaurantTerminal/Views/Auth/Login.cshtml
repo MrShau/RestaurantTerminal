@@ -1,0 +1,26 @@
+﻿@model LoginModel
+
+<link rel="stylesheet" href="~/css/login.css"/>
+
+<main class="form-signin w-100 m-auto">
+    <form asp-controller="Auth" asp-action="Login" asp-antiforgery="true">
+        <h1 class="h3 mb-3 fw-normal">Авторизация</h1>
+
+        <div class="form-floating">
+            <input type="text" class="form-control" asp-for="Login" id="floatingInput" placeholder="Логин">
+            <label for="floatingInput">Логин</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" asp-for="Password" id="floatingPassword" placeholder="Пароль">
+            <label for="floatingPassword">Пароль</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-danger mt-1" type="submit">Войти</button>
+
+        <span asp-validation-for="Login" class="text-danger"></span> <br/>
+        <span asp-validation-for="Password" class="text-danger"></span> <br/>
+        <span class="text-danger">@Model?.Error</span>
+
+        <p class="mt-2 mb-3 text-body-secondary" style="font-size: 12px;">Если вы забыли свой логин и пароль, или у вас нет аккаунта, то обратитесь к директору</p>
+    </form>
+</main>

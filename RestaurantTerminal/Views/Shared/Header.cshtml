@@ -1,0 +1,142 @@
+﻿@using System.Security.Claims;
+<header class=" p-3 border-bottom bg-dark-primary">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-md-start justify-content-between">
+
+            
+
+            @{
+                if (!User.IsInRole("COOK"))
+                {
+                    <div class="btn-group d-none d-sm-flex" role="group">
+                        <button class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none btn btn-danger" style="border-top-left-radius: 40px; border-bottom-left-radius: 40px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                            Категории
+                        </button>
+                        <a href="/Home/Index" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none btn btn-danger">
+                            Меню
+                        </a>
+                        <a href="/Order/List" class="d-flex align-items-center mb-2 border-rd-0 mb-lg-0 link-body-emphasis text-decoration-none btn btn-danger">
+                            Заказы
+                        </a>
+                        <a href="/Order/InfoTable" class="d-flex align-items-center mb-2 border-rd-0 mb-lg-0 link-body-emphasis text-decoration-none btn btn-danger">
+                            Инфотабло
+                        </a>
+                    </div>
+
+                    <button class="btn btn-danger d-sm-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasExample">
+                        <img src="~/img/menu.png" />
+                    </button>
+
+                    <div class="offcanvas offcanvas-start bg-dark-primary" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasExampleLabel">
+                        <div class="offcanvas-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+
+                        <div class="offcanvas-body">
+
+                            <button class="d-flex align-items-center link-body-emphasis text-decoration-none btn btn-danger p-2 w-100 my-2 border-rd-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                                Категории
+                            </button>
+                            <a href="/Home/Index" class="d-flex align-items-center link-body-emphasis text-decoration-none btn btn-danger p-2 my-2 border-rd-0">
+                                Меню
+                            </a>
+                            <a href="/Order/List" class="d-flex align-items-center border-rd-0 link-body-emphasis text-decoration-none btn btn-danger p-2 my-2">
+                                Заказы
+                            </a>
+                            <a href="/Order/InfoTable" class="d-flex align-items-center border-rd-0 link-body-emphasis text-decoration-none btn btn-danger p-2 my-2">
+                                Инфотабло
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            
+
+            <div class="mx-auto d-none d-md-block">
+                <h4>@ViewBag?.Title</h4>
+            </div>
+
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="~/img/user.png" alt="mdo" width="52" height="50" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                    <li><span class="dropdown-item-text">@User.FindFirst(ClaimTypes.Name)?.Value @User.FindFirst(ClaimTypes.Surname)?.Value</span></li>
+                    @{
+                        if (User.IsInRole("ADMIN") || User.IsInRole("MANAGER"))
+                        {
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item btn-danger-active" href="/Auth/AddEmployee">Добавить сотрудника</a></li>
+                            <li><a class="dropdown-item btn-danger-active" href="/Dish/Add">Добавить блюдо</a></li>
+                            <li><button class="dropdown-item btn-danger-active" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Добавить категорию</button></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item btn-danger-active" href="/Home/Employees">Список сотрудников</a></li>
+                        }
+                    }
+                    @{
+                        if (User.IsInRole("ADMIN") || User.IsInRole("MANAGER"))
+                        {
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item btn-danger-active" href="/Finance/Index">Финансы</a></li>
+                        }
+                    }
+
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item btn-danger-active" href="/Auth/Logout">Выйти</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog text-black">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addCategoryModalLabel">Добавление категории</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-controller="Home" asp-action="AddCategory" asp-antiforgery="true">
+
+                <div class="modal-body">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="floatingInput" name="category_name" placeholder="Логин">
+                        <label for="floatingInput">Название категории</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-danger">Добавить</button>
+                </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="offcanvas offcanvas-start bg-dark-primary" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Категории</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body px-2">
+        <hr />
+        <div>
+            @{
+                if (ViewBag?.Categories != null)
+                {
+                    foreach (Category category in ViewBag.Categories)
+                    {
+                        <a href="/Home/Index?category_id=@category.Id" class="btn btn-danger w-100 text-start fs-5 text-decoration-none my-1" style="border-radius: 0;">
+                            @category.Name
+                        </a>
+
+                    }
+                }
+
+            }
+
+        </div>
+    </div>
+</div>
+

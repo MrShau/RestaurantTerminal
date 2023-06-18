@@ -1,0 +1,69 @@
+﻿@model EditDishModel
+
+<div class="container">
+    <form asp-controller="Dish" asp-action="Edit" method="post" asp-antiforgery="true" enctype="multipart/form-data">
+        <div class="modal fade show d-block m-auto" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Редактирование блюда</h1>
+                        <a href="/Home/Index" class="text-decoration-none">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </a>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-floating my-1">
+                            <input class="form-control" asp-for="Name" id="floatingInput" placeholder="Логин">
+                            <label for="floatingInput">Наименование</label>
+                            <span asp-validation-for="Name" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="form-floating my-1">
+                            <input class="form-control" asp-for="Price" id="floatingInput" placeholder="Логин">
+                            <label for="floatingInput">Цена</label>
+                            <span asp-validation-for="Price" class="text-danger p-1"></span>
+                        </div>
+                        <div class="form-floating my-1">
+                            <input class="form-control" asp-for="CostPrice" value="@Model.CostPrice" id="floatingInput"  placeholder="Логин">
+                            <label for="floatingInput">Себестоимость</label>
+                            <span asp-validation-for="CostPrice" class="text-danger p-1"></span>
+                        </div>
+
+                        <div class="my-1">
+                            <input hidden asp-for="@Model.Id" />
+                            <label for="formFile" class="form-label">Изображение блюда</label>
+                            <input class="form-control" type="file" asp-for="Image" accept="image/png, image/jpg, image/jpeg">
+                        </div>
+
+                        <div>
+                            <select class="form-select py-3" asp-for="Category">
+                                <option value="" selected>Выберете категорию</option>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        foreach (var category in Model.Categories)
+                                        {
+                                            <option value="@category">@category</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="Category" class="text-danger p-1"></span>
+                            <span class="text-danger p-1">@Model?.Error</span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/Home/Index" class="text-decoration-none">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                        </a>
+                        <button type="submit" class="btn btn-danger">Подтвердить</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+

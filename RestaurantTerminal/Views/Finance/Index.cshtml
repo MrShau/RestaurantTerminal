@@ -1,0 +1,94 @@
+﻿@model FinanceModel
+@await Html.PartialAsync("Header")
+
+<div class="container my-4">
+
+	<h4 class="text-center">Финансы и статистика</h4>
+
+    <ul class="nav my-2">
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 1)
+                {
+                    <a class="nav-link btn btn-danger text-white py-2 px-3 text-decoration-none border-rd-0" href="/Finance/Index?type=all">За все время</a>
+                }
+                else
+                {
+                    <a class="nav-link btn btn-light text-black py-2 px-3 text-decoration-none border-rd-0" href="/Finance/Index?type=all">За все время</a>
+                }
+            }
+        </li>
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 2)
+                {
+                    <a class="nav-link btn btn-danger py-2 px-3 text-white text-decoration-none border-rd-0" href="/Finance/Index?type=today">За день</a>
+                }
+                else
+                {
+                    <a class="nav-link py-2 px-3 btn btn-light text-black  text-decoration-none border-rd-0" href="/Finance/Index?type=today">За день</a>
+                }
+            }
+        </li>
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 3)
+                {
+                    <a class="nav-link btn btn-danger py-2 px-3 text-white text-decoration-none border-rd-0" href="/Finance/Index?type=week">За неделю</a>
+                }
+                else
+                {
+                    <a class="nav-link py-2 px-3 btn btn-light text-black  text-decoration-none border-rd-0" href="/Finance/Index?type=week">За неделю</a>
+                }
+            }
+        </li>
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 4)
+                {
+                    <a class="nav-link btn btn-danger py-2 px-3 text-white text-decoration-none border-rd-0" href="/Finance/Index?type=month">За месяц</a>
+                }
+                else
+                {
+                    <a class="nav-link btn btn-light border-rd-0 py-2 px-3 text-black text-decoration-none" href="/Finance/Index?type=month">За месяц</a>
+                }
+            }
+        </li>
+    </ul>
+
+	<ul class="list-group my-2 fs-5">
+		@{
+			if (Model != null)
+			{
+				<li class="list-group-item">Доход :		@Model.Income руб.</li>
+				<li class="list-group-item">Расход :	@Model.Consumption руб.</li>
+				<li class="list-group-item">Прибыль :	@Model.Profit руб.</li>
+				<li class="list-group-item">Средний чек :				@Model.AverageCheck руб.</li>
+				<li class="list-group-item">Всего созданных заказов :	@Model.CountCreatedOrders</li>
+				<li class="list-group-item">Завершенные заказы :		@Model.CountCompletedOrders</li>
+				<li class="list-group-item">Отмененные заказы :			@Model.CountCanceledOrders</li>
+			}
+		}
+	</ul>
+
+    <h4 class="text-center my-3">Рейтинг блюд</h4>
+
+        @{
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item w-100 bg-dark-primary text-white">Название блюда</li>
+            <li class="list-group-item bg-dark-primary text-white">Количество</li>
+        </ul>
+            if (Model != null)
+            {
+                foreach(var dish in Model.Dishes)
+                {
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item w-100">@dish.Key</li>
+                        <li class="list-group-item">@dish.Value</li>
+                    </ul>
+                }
+            }
+
+    }
+
+</div>

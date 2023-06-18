@@ -1,0 +1,48 @@
+﻿@model Employee
+@await Html.PartialAsync("Header")
+
+<div class="container">
+    <div class="my-5 text-center">
+        <h4>Список активности @Model?.Person?.FirstName @Model?.Person?.LastName @Model?.Person?.Patronymic</h4>
+    </div>
+
+    <table class="table table-striped table-bordered border-dark mb-5">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Время входа</th>
+                <th scope="col">Время выхода</th>
+                <th scope="col">Длительность сессии</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    foreach (var item in Model.ActivityStatistics)
+                    {
+                        <tr>
+                            <th>
+                                @item.Id
+                            </th>
+                            <td>
+                                @item.StartDateToString()
+                            </td>
+                            <td>
+                                @item.EndDateToString()
+                            </td>
+                            <td>
+                                @item.SessionDuration()
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+
+    </table>
+
+    <a class="btn btn-danger btn-lg w-100" href="/ActivityStatistics/ExportToExcel?employee_id=@Model.Id">
+        Экпорт в EXCEL
+    </a>
+</div>

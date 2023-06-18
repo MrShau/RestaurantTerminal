@@ -1,0 +1,122 @@
+﻿@model List<MenuModel>
+@await Html.PartialAsync("Header")
+
+<main>
+
+    <div class="container">
+
+        <div class="d-md-none text-center mt-4">
+            <h1>Меню</h1>
+        </div>
+        
+
+        <main class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 my-3">
+            @{
+
+                if (Model != null)
+                {
+                    foreach (var dish in Model)
+                    {
+                        <div class="col my-3">
+                            <div class="card shadow">
+                                <img src="~/@dish.DishImageUrl" class="card-img-top" alt="@dish.DishName">
+                                <div class="card-body">
+                                    <h5 class="card-title">@dish.DishName</h5>
+                                    <span class="text-secondary">@dish.DishPrice руб.</span><br />
+                                    <span class="text-secondary">Категория: @dish.CategoryName </span>
+                                    <hr />
+
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-danger border-rd-0 p-2" onclick="updateDishCount(@dish.DishId, false)">
+                                                <img src="~/img/minus.png" width="26px" />
+                                            </button>
+                                            <input name="count" type="number" class="form-control text-center mx-2" id="dish_count_@dish.DishId" value="@dish.Count" min="0" max="20" readonly>
+                                            <input name="dish_id" hidden value="@dish.DishId" />
+                                            <button type="button" class="btn btn-danger border-rd-0 p-2" onclick="updateDishCount(@dish.DishId, true)">
+                                                <img src="~/img/plus.png" width="26px" />
+                                            </button>
+                                        </div>
+                                    @{
+                                        if (User.IsInRole("ADMIN") || User.IsInRole("MANAGER"))
+                                        {
+                                            <div class="text-end my-2">
+                                                <a href="/Dish/Edit?dish_id=@dish.DishId" class="text-decoration-none mx-2">
+                                                    <img src="~/img/edit.png" width="24px" height="24px" />
+                                                </a>
+                                                <button class="btn border-0 text-end p-0" data-bs-toggle="modal" data-bs-target="#deleteDishModal_@dish.DishId">
+                                                    <img src="~/img/delete.png" width="24px" height="24px" />
+                                                </button>
+                                            </div>
+
+                                            <div class="modal fade" id="deleteDishModal_@dish.DishId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Удаление блюда</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Вы уверены, что хотите удалить это блюдо из меню ?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                                                            <form asp-action="Delete" asp-controller="Dish">
+                                                                <input hidden name="dish_id" value="@dish.DishId"/>
+                                                                <button type="submit" class="btn btn-danger">Удалить</button>
+
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+            }
+        </main>
+
+        <div class="mt-5 fixed-bottom w-100 bg-dark-primary py-3">
+            <div class="container">
+                <a class="btn btn-lg w-100 btn-danger fs-5 text-decoration-none border-rd-0" href="/Order/Create">Создать заказ</a>
+            </div>
+        </div>
+        
+
+    </div>
+
+</main>
+
+<script>
+    function updateDishCount(id, add)
+    {
+        let inputCount = document.getElementById(`dish_count_${id}`)
+        let count = inputCount.value
+        if (add)
+            count = ++inputCount.value
+        else
+        {
+            if (count > 0)
+                count = --inputCount.value
+
+        }
+
+        fetch(`/Order/AddDish?count=${count}&dish_id=${id}`, {
+            method: "post",
+        })
+    }
+</script>
+
+<div style="width: 100%; height: 100px;">
+
+</div>
+
+
+
+
+
+

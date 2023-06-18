@@ -1,0 +1,17 @@
+﻿.bg-dark-primary,
+.bg-dark-primary:hover
+.bg-dark-primary:active{
+    background-color: #192652;
+    color: white;
+}
+
+.border-rd-0
+{
+    border-radius: 0;
+}
+
+.btn-danger-active:active,
+.btn-danger-active:focus {
+    background-color: var(--bs-danger);
+    color: white;
+}

@@ -1,0 +1,46 @@
+﻿@model List<CreateOrderModel>
+@await Html.PartialAsync("Header")
+ 
+@{
+    double totalPrice = 0;
+}
+
+<div class="container my-3">
+	<h3 class="text-center">Заказ</h3>
+	<div class="my-3">
+        <ol class="list-group list-group-numbered">
+            @{
+                foreach (var dish in Model)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-start list-item-dish-@dish.DishId">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">@dish.Name</div>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">@dish.Price руб. x @dish.Count</span>
+                        <button type="button" class="btn-close" onclick="deleteDish(@dish.DishId)"></button>
+                    </li>
+                    totalPrice += dish.Price * dish.Count;
+                }
+            }
+		</ol>
+        <div class="fs-5 text-end my-2">Итого : @totalPrice руб.</div>
+
+        <form asp-controller="Order" asp-action="Create">
+            <button type="submit" class="btn btn-danger w-100 fs-5 mt-3 border-rd-0">Подтвердить заказ</button>
+        </form>
+        <form asp-controller="Order" asp-action="Clear">
+            <button type="submit" class="btn btn-outline-danger w-100 fs-5 mt-3 border-rd-0">Очистить корзину</button>
+        </form>
+	</div>
+</div>
+
+<script>
+    function deleteDish(id)
+    {
+            fetch(`/Order/AddDish?count=0&dish_id=${id}`, {
+                method: "post",
+            })
+
+            location.reload()
+    }
+</script>

@@ -1,0 +1,56 @@
+﻿@await Html.PartialAsync("Header")
+@model Dictionary<int, bool>
+
+<div class="container">
+    <h2 class="my-5 text-center">Инфотабло</h2>
+    <main class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xxl-5 my-5">
+
+        @{
+            if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col my-2">
+                        @{
+                            if (item.Value)
+                            {
+                                <div class="card py-5 bg-success">
+                                    <h1 class="m-auto my-5 text-light">
+                                        @item.Key
+                                    </h1>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="card py-5 bg-light">
+                                    <h1 class="m-auto my-5 text-black">
+                                        @item.Key
+                                    </h1>
+                                </div>
+                            }
+                        }
+                        
+                    </div>
+                }
+            }
+        }
+
+    </main>
+</div>
+
+<script>
+    setInterval(() => {
+        fetch(`/Order/CheckNewOrder?readycount=${@ViewBag.OrdersReadyCount}&count=${@ViewBag.OrdersCount}`, {
+            method: "POST"
+        })
+        .then(res => {
+            res.json().then(data =>{
+                if (data.new_order == true)
+                {
+                    location.reload();
+                }
+            })
+        })
+        
+    }, 5000)
+</script>

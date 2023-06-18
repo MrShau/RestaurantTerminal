@@ -1,0 +1,237 @@
+﻿@model List<Order>
+@await Html.PartialAsync("Header")
+
+<div class="container my-3 overflow-x-auto">
+    <ul class="nav my-2">
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 1)
+                {
+                    <a class="nav-link btn btn-danger text-white py-2 px-3 text-decoration-none border-rd-0" href="/Order/List?type=actives">Активные заказы</a>
+                }
+                else
+                {
+                    <a class="nav-link btn btn-light text-black py-2 px-3 text-decoration-none border-rd-0" href="/Order/List?type=actives">Активные заказы</a>
+                }
+            }
+        </li>
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 2)
+                {
+                    <a class="nav-link btn btn-danger py-2 px-3 text-white text-decoration-none border-rd-0" href="/Order/List?type=ready">Готовые заказы</a>
+                }
+                else
+                {
+                    <a class="nav-link py-2 px-3 btn btn-light text-black  text-decoration-none border-rd-0" href="/Order/List?type=ready">Готовые заказы</a>
+                }
+            }
+        </li>
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 3)
+                {
+                    <a class="nav-link btn btn-danger py-2 px-3 text-white text-decoration-none border-rd-0" href="/Order/List?type=completed">Завершенные заказы</a>
+                }
+                else
+                {
+                    <a class="nav-link py-2 px-3 btn btn-light text-black  text-decoration-none border-rd-0" href="/Order/List?type=completed">Завершенные заказы</a>
+                }
+            }
+        </li>
+        <li class="nav-item">
+            @{
+                if (ViewBag.ActiveTab == 4)
+                {
+                    <a class="nav-link btn btn-danger py-2 px-3 text-white text-decoration-none border-rd-0" href="/Order/List?type=canceled">Отмененные заказы</a>
+                }
+                else
+                {
+                    <a class="nav-link btn btn-light border-rd-0 py-2 px-3 text-black text-decoration-none" href="/Order/List?type=canceled">Отмененные заказы</a>
+                }
+            }
+        </li>
+    </ul>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Номер заказа</th>
+                <th scope="col">Количество блюд</th>
+                <th scope="col">Итоговая цена</th>
+                <th scope="col">Дата и время</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    foreach(var order in Model)
+                    {
+                        <tr>
+                            <th scope="row">@order.Id</th>
+                            <td>@order.GetCountDishes()</td>
+                            <td>@order.GetTotalPrice() руб.</td>
+                            <td>@order.Check?.GetCreatedDate()</td>
+                            <td>
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop_@order.Id" aria-controls="offcanvasTop">
+                                    Посмотреть
+                                </button>
+                                <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop_@order.Id" aria-labelledby="offcanvasTopLabel">
+                                    <div class="offcanvas-header container">
+                                        <h4 class="offcanvas-title" id="offcanvasTopLabel">Заказ №@order.Id</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                    </div>
+                                    <div class="offcanvas-body container">
+                                        <ol class="list-group list-group-numbered">
+                                            @{
+                                                foreach(var dish in order.Dishes)
+                                                {
+                                                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                            <div class="ms-2 me-auto">
+                                                                <div class="fw-bold">@dish.Dish.Name</div>
+                                                            </div>
+                                                            <span class="badge bg-primary rounded-pill">@dish.Dish.Price руб. x @dish.Count</span>
+                                                        </li>
+                                                }
+                                            }
+                                        </ol>
+                                    </div>
+                                </div>
+                           </td>
+
+                            @{
+                                if (!User.IsInRole("CASHIER") && ViewBag.ActiveTab == 1)
+                                {
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#completeOrderModal_@order.Id">
+                                            Объявить готовым
+                                        </button>
+
+                                        <div class="modal fade" id="completeOrderModal_@order.Id" tabindex="-1" aria-labelledby="completeOrderModal_@order.Id" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Объявления заказа №@order.Id готовым</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Вы подтверждайте, что вы полностью выполнили заказ №@order.Id ?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                                                        <form asp-controller="Order" asp-action="Ready">
+                                                            <input name="order_id" value="@order.Id" hidden />
+                                                            <button type="submit" class="btn btn-danger">Подтвердить</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                }
+                                else if (!User.IsInRole("COOK") && ViewBag.ActiveTab == 2)
+                                {
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#completeOrderModal_@order.Id">
+                                            Завершить
+                                        </button>
+
+                                        <div class="modal fade" id="completeOrderModal_@order.Id" tabindex="-1" aria-labelledby="completeOrderModal_@order.Id" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Завершение заказа №@order.Id</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Вы подтверждайте, что вы отдали заказ №@order.Id клиенту ?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                                                        <form asp-controller="Order" asp-action="Complete">
+                                                            <input name="order_id" value="@order.Id" hidden />
+                                                            <button type="submit" class="btn btn-danger">Подтвердить</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                }
+                            }
+
+                            @{
+                                if (ViewBag.ActiveTab == 1)
+                                {
+                                    <td>
+
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancellationOrderModal_@order.Id">
+                                            Отменить
+                                        </button>
+
+                                        <div class="modal fade" id="cancellationOrderModal_@order.Id" tabindex="-1" aria-labelledby="cancellationOrderModal_@order.Id" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Отмена заказа №@order.Id</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Вы уверены что хотите отменить заказ №@order.Id
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                                                        <form asp-controller="Order" asp-action="Cancellation">
+                                                            <input name="order_id" value="@order.Id" hidden />
+                                                            <button type="submit" class="btn btn-danger">Подтвердить</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                }
+                            }
+                            
+                        </tr>
+                    }
+                }
+            }
+            
+        </tbody>
+    </table>
+</div>
+
+<script>
+    
+    setInterval(() => {
+
+        switch (@ViewBag.ActiveTab)
+        {
+            case 1:
+                fetch(`/Order/CheckNewOrder?count=${@ViewBag.OrdersCount}`, {
+                    method: "POST"
+                })
+                    .then(res => {
+                        res.json().then(data => {
+                            if (data.new_order == true) {
+                                location.reload();
+                            }
+                        })
+                    })
+                break;
+
+            case 2:
+                console.log(1)
+                break;
+
+            default:
+                console.log(0);
+                break;
+        }
+
+    }, 5000);
+
+</script>

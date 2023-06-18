@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag?.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+</head>
+<body class="bg-body-secondary">
+    @RenderBody()
+
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let cords = ['scrollX', 'scrollY'];
+        window.addEventListener('unload', e => cords.forEach(cord => localStorage[cord] = window[cord]));
+        window.scroll(...cords.map(cord => localStorage[cord]));
+    </script>
+</body>
+</html>
